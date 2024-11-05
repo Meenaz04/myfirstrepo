@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>playing Game
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-family: Arial, sans-serif;
+            background-color: white; 
+        }
+        h2 {
+            margin-bottom: 20px;
+            font-size: 30px;
+            color: black;
+        }
+        .board {
+            display: grid;
+            grid-template-columns: repeat(3, 100px);
+            grid-template-rows: repeat(3, 100px);
+            gap: 5px;
+            background-color: aqua;
+        }
+        .cell {
+            width: 100px;
+            height: 100px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            border: 2px solid black;
+            cursor: pointer;
+            background-color: aquamarine;
+        }
+        .cell:hover {
+            background-color:  aquamarine;
+        }
+        .message {
+            margin-top: 20px;
+            font-size: 18px;
+        }
+        .reset {
+            margin-top: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: rgba(60, 210, 14, 0.968);
+        }
+        #madeButton {
+            margin-top: 10px;
+            padding: 10px 20px;
+            font-size: 12px;
+            background-color:rgba(60, 210, 14, 0.968);
+            border: 2px solid black
+            
+        }
+    </style>
+</head>
+<body>
+ <center><h1>GAME</h1><br>
+<h2>Tic Tac Toe</h2></center>
+<div class="board" id="board"></div>
+<div class="message" id="message"></div>
+<button class="reset" id="resetButton">Reset Game</button><br>
+<button id="madeButton">Made by Meenaz</button>
+<script>
+    const boardElement = document.getElementById('board');
+    const messageElement = document.getElementById('message');
+    const resetButton = document.getElementById('resetButton');
+
+
+    let board = Array(9).fill(null);
+    let currentPlayer = 'X';
+
+    function createBoard() {
+        boardElement.innerHTML = '';
+        board.forEach((cell, index) => {
+            const cellElement = document.createElement('div');
+            cellElement.classList.add('cell');
+            cellElement.textContent = cell;
+            cellElement.addEventListener('click', () => handleCellClick(index));
+            boardElement.appendChild(cellElement);
+        });
+    }
+
+    function handleCellClick(index) {
+        if (!board[index] && !checkWinner()) {
+            board[index] = currentPlayer;
+            if (checkWinner()) {
+                messageElement.textContent = `${currentPlayer} wins!`;
+            } else if (board.every(cell => cell)) {
+                messageElement.textContent = "It's a tie!";
+            } else {
+                currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+                messageElement.textContent = `${currentPlayer}'s turn.`;
+            }
+            createBoard();
+        }
+    }
+
+    function checkWinner() {
+        const winningCombinations = [
+            [0, 1, 2], [3, 4, 5], [6, 7, 8], // rows
+            [0, 3, 6], [1, 4, 7], [2, 5, 8], // columns
+            [0, 4, 8], [2, 4, 6]             // diagonals
+        ];
+
+        for (const combination of winningCombinations) {
+            const [a, b, c] = combination;
+            if (board[a] && board[a] === board[b] && board[a] === board[c]) {
+                return board[a];
+            }
+        }
+        return null;
+    }
+
+    function resetGame() {
+        board = Array(9).fill(null);
+        currentPlayer = 'X';
+        messageElement.textContent = "X's turn.";
+        createBoard();
+    }
+
+    resetButton.addEventListener('click', resetGame);
+    resetGame(); // Initialize the game
+</script>
+
+</body>
+</html>
